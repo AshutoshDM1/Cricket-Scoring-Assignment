@@ -1,7 +1,12 @@
+import CricketScoring from "@/components/cricket-scoring";
+
+import CricketScorecard from "@/components/cricket-scorecard";
+
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="text-4xl font-bold">Cricket Scoring App Assignment</h1>
+    <div className="flex gap-3 items-center justify-center min-h-screen">
+      <CricketScoring />
+      <CricketScorecard />
     </div>
   );
 }
