@@ -7,11 +7,6 @@ Cricket Scoring Application Assignment.
 - Email: admin@gmail.com
 - Password: admin123
 
-## Update 13 Dec on 8:30 PM
-
-- Middleware is used to redirect users to login page if they are not authenticated.
-- Made some changes to the frontend to make it more responsive.
-
 # Roadmap
 
 ![pic1](https://github.com/AshutoshDM1/Cricket-Scoring-Assignment/blob/main/Frontend/public/cricket_roadmap.png)
@@ -34,3 +29,20 @@ Cricket Scoring Application Assignment.
 # Dark Mode
 
 ![pic3](https://github.com/AshutoshDM1/Cricket-Scoring-Assignment/blob/main/Frontend/public/image2.png)
+
+## Update 13 Dec on 8:30 PM
+
+- Middleware is used to redirect users to login page if they are not authenticated.
+- Made some changes to the frontend to make it more responsive.
+
+## Found some issues - 8:45 PM
+
+- The NextAuth was not working as expected.
+- But Working Fine in the local/dev server.
+
+## Update 14 Dec on 10:30 AM
+
+- Found the issue in the NextAuth.
+- The issue was with the database. MongoDM Atlas was giving access to my IP address Only.
+- Found the solution by changing the database to postgresql.
+- Now working fine in the production server.
