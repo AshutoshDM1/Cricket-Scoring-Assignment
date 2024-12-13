@@ -2,7 +2,7 @@ import { FullMatchInfo } from "@/lib/types";
 import axios from "axios";
 import { toast } from "sonner";
 
-const backendURL = "http://localhost:4000/";
+const backendURL = "https://cricket-scoring-assignment.onrender.com/";
 
 const HandleError = (error: any): void => {
   if (error.response) {
@@ -19,7 +19,7 @@ const HandleError = (error: any): void => {
 };
 
 export const getMatchInfo = async () => {
-  const response = await axios.get(backendURL + "match");
+  const response = await axios.get(backendURL + "/match");
   return response.data;
 };
 

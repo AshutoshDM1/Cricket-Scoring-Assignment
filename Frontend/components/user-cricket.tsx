@@ -19,7 +19,7 @@ export default function UserCricketScorecard() {
   const { matchInfo, setMatchInfo } = useFullMatchStore();
 
   useEffect(() => {
-    const ws = new WebSocket(process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:4001/");
+    const ws = new WebSocket("wss://cricket-scoring-assignment.onrender.com");
 
     ws.onopen = () => {
       console.log("WebSocket connection established");

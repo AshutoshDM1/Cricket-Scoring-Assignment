@@ -2,11 +2,10 @@
   "name": "cricket-scoring-server",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --exec ts-node src/index.ts",
-    "build": "tsc -b",
-    "start": "node dist/index.js"
+"scripts": {
+    "start": "node dist/index.js",
+    "build": "tsc",
+    "dev": "ts-node-dev src/index.ts"
   },
   "author": "Ashutosh Tiwari",
   "license": "ISC",

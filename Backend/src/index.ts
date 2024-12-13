@@ -3,13 +3,16 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { WebSocket, WebSocketServer } from "ws";
 import { FullMatchInfo } from "./lib/types";
+import { createServer } from "http";
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 4000;
 
-const wss = new WebSocketServer({ port: 4001 });
+const server = createServer(app);
+
+const wss = new WebSocketServer({ server });
 
 app.use(cors());
 app.use(express.json());
@@ -34,6 +37,9 @@ app.post("/", (req, res) => {
   }
 });
 
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "healthy" });
+});
 
 wss.on("connection", (ws) => {
   console.log("New WebSocket client connected");
@@ -43,6 +49,6 @@ wss.on("connection", (ws) => {
   });
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on port http://localhost:${port}`);
+server.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
