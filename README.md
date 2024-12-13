@@ -10,6 +10,10 @@ Cricket Scoring Application Assignment.
 # Roadmap
 
 ![pic1](https://github.com/AshutoshDM1/Cricket-Scoring-Assignment/blob/main/Frontend/public/cricket_roadmap.png)
+## corrections - 
+- No Docker is used as there was no need.
+- Zustand is used instead of Recoil as there was heavy statemanagement to do.
+- Backend url is - https://cricket-scoring-assignment.onrender.com/
 
 ### Total Time Took to Complete the Assignment
 
