@@ -19,7 +19,7 @@ const LoginPage = () => {
         email,
         password,
         action: "login",
-        redirect: true,
+        redirect: false,
         callbackUrl: "/admin",
       });
 

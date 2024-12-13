@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
-
 const RegisterPage = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -21,7 +20,7 @@ const RegisterPage = () => {
         name,
         password,
         action: "signup",
-        redirect: true,
+        redirect: false,
         callbackUrl: "/admin",
       });
 
