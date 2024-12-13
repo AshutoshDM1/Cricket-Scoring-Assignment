@@ -1,5 +1,6 @@
 import { create } from "zustand";
-interface MatchState {
+import { FullMatchInfo } from "@/lib/types";
+export interface MatchState {
   matchInfo: {
     gameStarted: boolean;
     team1: {
@@ -20,6 +21,7 @@ interface MatchState {
       runs: number;
       balls: number;
       fours: number;
+      sixes: number;
     }>;
     bowling: Array<{
       name: string;
@@ -101,7 +103,18 @@ export const useMatchStore = create<MatchState>((set, get) => ({
   addRuns: (runs) =>
     set((state) => {
       if (!get().canProceed()) return state;
-
+      if (runs === 4) {
+        const batsman = state.matchInfo.batting.find(
+          (batsman) => batsman.name === state.striker
+        );
+        if (batsman) batsman.fours += 1;
+      }
+      if (runs === 6) {
+        const batsman = state.matchInfo.batting.find(
+          (batsman) => batsman.name === state.striker
+        );
+        if (batsman) batsman.sixes += 1;
+      }
       return {
         matchInfo: {
           ...state.matchInfo,
@@ -267,6 +280,7 @@ export const useMatchStore = create<MatchState>((set, get) => ({
           runs: 0,
           balls: 0,
           fours: 0,
+          sixes: 0,
         });
       }
       return {
@@ -287,6 +301,7 @@ export const useMatchStore = create<MatchState>((set, get) => ({
           runs: 0,
           balls: 0,
           fours: 0,
+          sixes: 0,
         });
       }
       return {
@@ -335,4 +350,44 @@ export const useMatchStore = create<MatchState>((set, get) => ({
   },
   gameStarted: false,
   setGameStarted: (value) => set({ gameStarted: value }),
+}));
+
+export const useFullMatchStore = create<{
+  matchInfo: FullMatchInfo;
+  setMatchInfo: (matchInfo: FullMatchInfo) => void;
+}>((set) => ({
+  matchInfo: {
+    gameStarted: false,
+    team1: {
+      name: "IND",
+      score: "0/0",
+      overs: "00.0",
+      flagUrl:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsILCHCa-YRabNlW_ph9ALALiIvGi76lrz-A&s",
+    },
+    team2: {
+      name: "BAN",
+      score: "171/8",
+      overs: "20.0",
+      flagUrl:
+        "https://t4.ftcdn.net/jpg/01/04/47/13/240_F_104471360_1xohRUSRjfdGxoaRDtLg2z4ztBHkT21K.jpg",
+    },
+    result: "India is batting",
+    batting: [],
+    bowling: [],
+    ballTimeline: [],
+    extras: {
+      byes: 0,
+      legByes: 0,
+      wides: 0,
+      noBalls: 0,
+      penalty: 0,
+      total: 0,
+    },
+    commentary: [],
+    striker: "",
+    nonStriker: "",
+    currentBowler: "",
+  },
+  setMatchInfo: (matchInfo) => set({ matchInfo }),
 }));

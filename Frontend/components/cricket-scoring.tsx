@@ -15,6 +15,7 @@ import { ToggleMode } from "./ToggleMode";
 import { useMatchStore } from "@/store/matchStore";
 import { BangladeshBowlers, IndiaPlayers } from "@/player";
 import { toast } from "sonner";
+import { sendMatchInfo } from "@/services/api";
 
 export default function CricketScoring() {
   const [isMuted, setIsMuted] = useState(false);
@@ -34,6 +35,7 @@ export default function CricketScoring() {
   const setGameStarted = useMatchStore((state) => state.setGameStarted);
   const matchInfo = useMatchStore((state) => state.matchInfo);
   const updateMatchInfo = useMatchStore((state) => state.updateMatchInfo);
+  const currentBowler = useMatchStore((state) => state.currentBowler);
 
   const handleBallStart = () => {
     if (canProceed()) {
@@ -309,6 +311,16 @@ export default function CricketScoring() {
           <Button
             className="bg-green-800 hover:bg-green-900 py-9 text-white"
             disabled={!isActionEnabled}
+            onClick={() => {
+              const completeMatchInfo = {
+                ...matchInfo,
+                striker: striker,
+                nonStriker: nonStriker,
+                currentBowler: currentBowler,
+              };
+              console.log(completeMatchInfo);
+              sendMatchInfo(completeMatchInfo);
+            }}
           >
             Done
           </Button>

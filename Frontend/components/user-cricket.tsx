@@ -1,5 +1,6 @@
 "use client";
-import { useMatchStore } from "@/store/matchStore";
+import { useEffect } from "react";
+import { useFullMatchStore } from "@/store/matchStore";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Table,
@@ -11,11 +12,51 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Info, Search, X } from "lucide-react";
+import { toast } from "sonner";
+import { FullMatchInfo } from "@/lib/types";
 
-export default function CricketScorecard() {
-  const matchInfo = useMatchStore((state) => state.matchInfo);
-  const striker = useMatchStore((state) => state.striker);
-  const nonStriker = useMatchStore((state) => state.nonStriker);
+export default function UserCricketScorecard() {
+  const { matchInfo, setMatchInfo } = useFullMatchStore();
+
+  useEffect(() => {
+    const ws = new WebSocket(process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:4001/");
+
+    ws.onopen = () => {
+      console.log("WebSocket connection established");
+      toast.success("WebSocket connection established");  
+    };
+
+    ws.onmessage = (event) => {
+      try {
+        const newMatchInfo: FullMatchInfo = JSON.parse(event.data);
+
+        setMatchInfo(newMatchInfo);
+        toast.success("Match info updated");
+      } catch (error) {
+        console.error("Error parsing WebSocket message:", error);
+      }
+    };
+
+    ws.onerror = (error) => {
+      console.log(error);
+      toast.error("WebSocket connection error");
+    };
+
+    ws.onclose = () => {
+      toast.error("Connection lost. Attempting to reconnect...");
+      // Attempt to reconnect after 5 seconds
+      setTimeout(() => {
+        window.location.reload();
+      }, 5000);
+    };
+
+    // Cleanup on unmount
+    return () => {
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.close();
+      }
+    };
+  }, []); // Empty dependency array means this effect runs once on mount
 
   return (
     <Card className="w-full max-w-md">
@@ -81,21 +122,34 @@ export default function CricketScorecard() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {matchInfo.batting.map((batter, index) => (
-              <TableRow key={index}>
-                <TableCell
-                  className={batter.name === striker ? "text-green-500" : ""}
-                >
-                  {batter.name}
-                  {(batter.name === striker || batter.name === nonStriker) &&
-                    "*"}
-                </TableCell>
-                <TableCell className="text-right">{batter.runs}</TableCell>
-                <TableCell className="text-right">{batter.balls}</TableCell>
-                <TableCell className="text-right">{batter.fours}</TableCell>
-                <TableCell className="text-right">{batter.sixes}</TableCell>
-              </TableRow>
-            ))}
+            {matchInfo.batting.length === 0 ? (
+              <>
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center">
+                    No batsmen yet
+                  </TableCell>
+                </TableRow>
+              </>
+            ) : (
+              matchInfo.batting.map((batter, index) => (
+                <TableRow key={index}>
+                  <TableCell
+                    className={
+                      batter.name === matchInfo.striker ? "text-green-500" : ""
+                    }
+                  >
+                    {batter.name}
+                    {(batter.name === matchInfo.striker ||
+                      batter.name === matchInfo.nonStriker) &&
+                      "*"}
+                  </TableCell>
+                  <TableCell className="text-right">{batter.runs}</TableCell>
+                  <TableCell className="text-right">{batter.balls}</TableCell>
+                  <TableCell className="text-right">{batter.fours}</TableCell>
+                  <TableCell className="text-right">{batter.sixes}</TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
 
