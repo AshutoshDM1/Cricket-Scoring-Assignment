@@ -2,6 +2,7 @@
 import { ToggleMode } from "@/components/ToggleMode";
 import { Button } from "@/components/ui/button";
 import UserCricketScorecard from "@/components/user-cricket";
+import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
@@ -21,6 +22,9 @@ export default function Home() {
             onClick={() => router.push("/auth/signup")}
           >
             Signup
+          </Button>
+          <Button className="text-sm " onClick={() => signOut()}>
+            Signout
           </Button>
           <ToggleMode />
         </div>

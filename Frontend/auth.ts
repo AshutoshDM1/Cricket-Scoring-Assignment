@@ -1,11 +1,9 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
+import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "./db";
 import bcrypt from "bcryptjs";
-import { PrismaAdapter } from "@auth/prisma-adapter";
 
-export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
+export const handler = NextAuth({
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -15,98 +13,85 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
         action: { label: "Action", type: "text" },
       },
-      async authorize(credentials) {
+      async authorize(
+        credentials:
+          | Record<"email" | "password" | "name" | "action", string>
+          | undefined
+      ) {
         if (!credentials?.email || !credentials?.password) {
           throw new Error("Missing fields");
         }
 
-        try {
-          const user = await prisma.user.findUnique({
+        if (credentials.action === "signup") {
+          const existingUser = await prisma.user.findUnique({
             where: { email: credentials.email },
-            select: {
-              id: true,
-              email: true,
-              name: true,
-              password: true,
+          });
+
+          if (existingUser) {
+            throw new Error("Email already exists");
+          }
+
+          const hashedPassword = await bcrypt.hash(credentials.password, 10);
+
+          const user = await prisma.user.create({
+            data: {
+              email: credentials.email,
+              name: credentials.name || "",
+              password: hashedPassword,
             },
           });
 
-          if (credentials.action === "signup") {
-            if (user) {
-              throw new Error("Email already exists");
-            }
-
-            const hashedPassword = await bcrypt.hash(credentials.password, 10);
-            const newUser = await prisma.user.create({
-              data: {
-                email: credentials.email,
-                name: credentials.name || "",
-                password: hashedPassword,
-              },
-              select: {
-                id: true,
-                email: true,
-                name: true,
-              },
-            });
-
-            return newUser;
-          }
-
-          // Login flow
-          if (!user || !user.password) {
-            throw new Error("No user found");
-          }
-
-          const isPasswordValid = await bcrypt.compare(
-            credentials.password,
-            user.password
-          );
-
-          if (!isPasswordValid) {
-            throw new Error("Invalid password");
-          }
-
           return {
-            id: user.id,
+            id: user.id.toString(),
             email: user.email,
             name: user.name,
           };
-        } catch (error) {
-          console.error("Auth error:", error);
-          throw error;
         }
+
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email },
+        });
+
+        if (!user || !user.password) {
+          throw new Error("No user found");
+        }
+
+        const isPasswordValid = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
+
+        if (!isPasswordValid) {
+          throw new Error("Invalid password");
+        }
+
+        return {
+          id: user.id.toString(),
+          email: user.email,
+          name: user.name,
+        };
       },
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: any; user: any }) {
       if (user) {
         token.id = user.id;
-        token.email = user.email;
-        token.name = user.name;
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }: { session: any; token: any }) {
       if (session.user) {
-        session.user.id = token.id as string;
-        session.user.email = token.email as string;
-        session.user.name = token.name as string;
+        session.user.id = token.id;
       }
       return session;
     },
   },
   pages: {
-    signIn: "/auth/signin",
+    signIn: "/auth/login",
     error: "/auth/error",
   },
   session: {
     strategy: "jwt",
   },
-  secret: process.env.NEXTAUTH_SECRET || "secret",
-};
-
-export const handler = NextAuth(authOptions);
-
-export { handler as GET, handler as POST };
+});
