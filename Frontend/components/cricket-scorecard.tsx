@@ -14,6 +14,8 @@ import { ChevronDown, Info, Search, X } from "lucide-react";
 
 export default function CricketScorecard() {
   const matchInfo = useMatchStore((state) => state.matchInfo);
+  const striker = useMatchStore((state) => state.striker);
+  const nonStriker = useMatchStore((state) => state.nonStriker);
 
   return (
     <Card className="w-full max-w-md">
@@ -80,7 +82,9 @@ export default function CricketScorecard() {
           <TableBody>
             {matchInfo.batting.map((batter, index) => (
               <TableRow key={index}>
-                <TableCell>{batter.name}</TableCell>
+                <TableCell className={batter.name === striker ? "text-green-500" : ""}>
+                  {batter.name}{(batter.name === striker || batter.name === nonStriker) && "*"}
+                </TableCell>
                 <TableCell className="text-right">{batter.runs}</TableCell>
                 <TableCell className="text-right">{batter.balls}</TableCell>
                 <TableCell className="text-right">{batter.fours}</TableCell>
@@ -113,11 +117,15 @@ export default function CricketScorecard() {
         </Table>
 
         <div className="space-y-2 ">
-          <div className="flex gap-1 overflow-x-hidden max-w-full scroll-smooth" style={{scrollBehavior: 'smooth'}} ref={(el) => {
-            if (el) {
-              el.scrollLeft = el.scrollWidth;
-            }
-          }}>
+          <div
+            className="flex gap-1 overflow-x-hidden max-w-full scroll-smooth"
+            style={{ scrollBehavior: "smooth" }}
+            ref={(el) => {
+              if (el) {
+                el.scrollLeft = el.scrollWidth;
+              }
+            }}
+          >
             {matchInfo.ballTimeline.map((runs, index) => (
               <div
                 key={index}
