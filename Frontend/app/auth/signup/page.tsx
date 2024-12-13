@@ -20,10 +20,12 @@ const RegisterPage = () => {
         name,
         password,
         action: "signup",
-        redirect: false,
+        redirect: true,
         callbackUrl: "/admin",
       });
-
+      if (result?.ok) {
+        router.push("/admin");
+      }
       if (result?.error) {
         throw new Error(result.error);
       }

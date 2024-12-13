@@ -77,8 +77,8 @@ export default function CricketScoring() {
   const isActionEnabled = gameStarted;
 
   return (
-    <div className="w-full max-w-5xl space-y-6 p-4 border rounded-md ">
-      <div className="flex gap-4 items-end">
+    <div className="w-full max-w-5xl space-y-6 p-4 border rounded-md mt-[5vh] ">
+      <div className="flex flex-wrap gap-4 items-end">
         <div className="space-y-2 flex-1">
           <Label>Batsman (Striker)</Label>
           <Select value={striker} onValueChange={setStriker}>
@@ -130,9 +130,9 @@ export default function CricketScoring() {
       </div>
 
       {/* Score Controls */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between">
         <div className="space-y-1">
-          <Label className="text-base">Score:</Label>
+          <Label className="text-base font-bold ">Score:</Label>
           <div className="text-sm text-muted-foreground">Extra:</div>
         </div>
         <div className="flex items-center gap-2">
@@ -147,25 +147,25 @@ export default function CricketScoring() {
           </div>
         </div>
       </div>
-      <div className="flex flex-col gap-2 select-none ">
-        <div className="flex gap-2">
-          <div className="grid grid-rows-3 gap-2 w-1/3 font-bold ">
+      <div className="flex flex-col gap-2 select-none">
+        <div className="flex flex-col sm:flex-row gap-2">
+          <div className="grid grid-cols-3 sm:grid-cols-1 sm:grid-rows-3 gap-2 w-full sm:w-1/3 font-bold">
             <Button
               disabled={gameStarted}
-              className="bg-green-600 hover:bg-green-700 py-10 text-white"
+              className="bg-green-600 hover:bg-green-700 py-6 sm:py-10 text-white"
               onClick={handleBallStart}
             >
               Start Game
             </Button>
             <Button
-              className="bg-amber-700 hover:bg-amber-800 py-10 text-white"
+              className="bg-amber-700 hover:bg-amber-800 py-6 sm:py-10 text-white"
               onClick={() => handleExtra("wide")}
               disabled={!isActionEnabled}
             >
               Wide
             </Button>
             <Button
-              className="bg-indigo-700 hover:bg-indigo-900 py-10 text-white"
+              className="bg-indigo-700 hover:bg-indigo-900 py-6 sm:py-10 text-white"
               onClick={() => handleExtra("noBall")}
               disabled={!isActionEnabled}
             >
@@ -174,7 +174,7 @@ export default function CricketScoring() {
           </div>
           <div className="grid grid-cols-3 grid-rows-2 w-full gap-2">
             <Button
-              className="bg-blue-600 hover:bg-blue-700 h-full text-white"
+              className="bg-blue-600 hover:bg-blue-700 h-full text-white text-sm sm:text-base"
               onClick={() => handleRuns(0)}
               disabled={!isActionEnabled}
             >
@@ -217,9 +217,9 @@ export default function CricketScoring() {
             </Button>
           </div>
         </div>
-        <div className="grid grid-cols-5 gap-2 w-full">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 w-full">
           <Button
-            className="bg-purple-700 hover:bg-purple-800 py-7 text-white"
+            className="bg-purple-700 hover:bg-purple-800 py-4 sm:py-7 text-white text-sm sm:text-base"
             disabled={!isActionEnabled}
           >
             Bowler Stop
@@ -281,9 +281,9 @@ export default function CricketScoring() {
             Catch Drop
           </Button>
         </div>
-        <div className="grid grid-cols-4 gap-2 w-full">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full">
           <Button
-            className="bg-gray-600 hover:bg-gray-700 py-9 text-white"
+            className="bg-gray-600 hover:bg-gray-700 py-6 sm:py-9 text-white text-sm sm:text-base"
             disabled={!isActionEnabled}
           >
             Third Umpire

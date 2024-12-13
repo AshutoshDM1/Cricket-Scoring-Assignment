@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
-
 const LoginPage = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -19,15 +18,13 @@ const LoginPage = () => {
         email,
         password,
         action: "login",
-        redirect: false,
-        callbackUrl: "/admin",
       });
-
+      if (result?.ok) {
+        router.push("/admin");
+      }
       if (result?.error) {
         throw new Error(result.error);
       }
-
-      router.push("/admin");
     } catch (error) {
       console.error("Login error:", error);
     } finally {
@@ -73,7 +70,6 @@ const LoginPage = () => {
           </div>
 
           <div className="flex items-center justify-between">
-           
             <button
               type="button"
               className="text-sm text-cyan-500 hover:text-cyan-400"

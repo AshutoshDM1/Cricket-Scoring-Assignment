@@ -7,13 +7,21 @@ Cricket Scoring Application Assignment.
 - Email: admin@gmail.com
 - Password: admin123
 
+## Update 13 Dec on 8:30 PM
+
+- Middleware is used to redirect users to login page if they are not authenticated.
+- Made some changes to the frontend to make it more responsive.
+
 # Roadmap
 
 ![pic1](https://github.com/AshutoshDM1/Cricket-Scoring-Assignment/blob/main/Frontend/public/cricket_roadmap.png)
-## corrections - 
+
+## corrections -
+
 - No Docker is used as there was no need.
 - Zustand is used instead of Recoil as there was heavy statemanagement to do.
 - Backend url is - https://cricket-scoring-assignment.onrender.com/
+- NextAuth is used for authentication.
 
 ### Total Time Took to Complete the Assignment
 
