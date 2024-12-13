@@ -21,37 +21,39 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
-          if (credentials.action === "signup") {
-            const existingUser = await prisma.user.findUnique({
-              where: { email: credentials.email },
-            });
+          const user = await prisma.user.findUnique({
+            where: { email: credentials.email },
+            select: {
+              id: true,
+              email: true,
+              name: true,
+              password: true,
+            },
+          });
 
-            if (existingUser) {
+          if (credentials.action === "signup") {
+            if (user) {
               throw new Error("Email already exists");
             }
 
             const hashedPassword = await bcrypt.hash(credentials.password, 10);
-
-            const user = await prisma.user.create({
+            const newUser = await prisma.user.create({
               data: {
                 email: credentials.email,
                 name: credentials.name || "",
                 password: hashedPassword,
               },
+              select: {
+                id: true,
+                email: true,
+                name: true,
+              },
             });
 
-            return {
-              id: user.id,
-              email: user.email,
-              name: user.name,
-            };
+            return newUser;
           }
 
           // Login flow
-          const user = await prisma.user.findUnique({
-            where: { email: credentials.email },
-          });
-
           if (!user || !user.password) {
             throw new Error("No user found");
           }
